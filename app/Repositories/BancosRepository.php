@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Models\Banco;
+use App\Models\Bancos;
 
-class BancoRepository
+class BancosRepository
 {
     public function listarBancos()
     {
-        return Banco::all();
+        return Bancos::all();
     }
 }

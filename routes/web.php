@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\BancoController;
+use App\Http\Controllers\BancosController;
+use App\Http\Controllers\UsuariosController;
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
@@ -19,5 +20,9 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-//$router->get('/bancos', [BancoController::class, 'listarBancos']);
-$router->get('/bancos', 'BancoController@listarBancos');
+//$router->get('/bancos', [BancosController::class, 'listarBancos']);
+$router->get('/bancos', 'BancosController@listarBancos');
+$router->get('/usuarios', 'UsuariosController@listarUsuarios');
+$router->post('/usuarios/cadastrar','UsuariosController@cadastrar');
+$router->delete('/usuarios/remover/{id}','UsuariosController@removerUsuario');
+
