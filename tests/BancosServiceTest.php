@@ -2,24 +2,24 @@
 
 namespace Tests;
 
-use App\Repositories\BancoRepository;
-use App\Services\BancoService;
+use App\Repositories\BancosRepository;
+use App\Services\BancosService;
 use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 
-class BancoServiceTest extends TestCase
+class BancosServiceTest extends TestCase
 {
     public function testListarBancosRetornaColecao()
     {
-        // Mock do BancoRepository
-        $bancoRepository = $this->createMock(BancoRepository::class);
-        $bancoRepository->method('listarBancos')->willReturn(new Collection());
+        // Mock do BancosRepository
+        $bancosRepository = $this->createMock(BancosRepository::class);
+        $bancosRepository->method('listar')->willReturn(new Collection());
 
         // Instância do BancoService com o mock do repository
-        $bancoService = new BancoService($bancoRepository);
+        $bancosService = new BancosService($bancosRepository);
 
         // Chama o método a ser testado
-        $result = $bancoService->listarBancos();
+        $result = $bancosService->listar();
 
         // Assert: Verifica se o resultado é uma instância de Collection
         $this->assertInstanceOf(Collection::class, $result);

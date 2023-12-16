@@ -8,4 +8,5 @@ class Bancos extends Model
 {
     protected $table = 'bancos';
 
+    protected $fillable = ['nome','usuario_id','saldo'];
 }

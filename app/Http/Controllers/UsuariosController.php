@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\UsuariosService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use App\Services\UsuariosService;
 
 class UsuariosController extends Controller
 {
@@ -14,25 +16,45 @@ class UsuariosController extends Controller
         $this->usuariosService = $usuariosService;
     }
 
+    public function listar()
+    {
+        $usuarios = $this->usuariosService->listar();
+        return response()->json($usuarios);
+    }
+
     public function cadastrar(Request $request)
     {
         $dados = $request->all();
-        $usuario = $this->usuariosService->cadastrarUsuario($dados);
+        $usuario = $this->usuariosService->cadastrar($dados);
 
         return response()->json($usuario, 201);
     }
 
-    public function removerUsuario($id)
+    public function editar(Request $request, $id)
     {
-        $resultado = $this->usuariosService->removerUsuario($id);
+        try {
+            $validator = Validator::make($request->all(), [
+                'nome' => 'required|string|max:255',
+                'email' => 'required|string|max:255',
+            ]);
 
-        return response()->json($resultado);
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
+            $dados = $validator->validated();
+
+            $resultado = $this->usuariosService->editar($id, $dados);
+            return response()->json($resultado);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json(['mensagem' => 'Erro interno do servidor: ' . $e->getMessage(), 'sucesso' => false], 500);
+        }
     }
 
-    public function listarUsuarios()
+    public function remover($id)
     {
-        $usuarios = $this->usuariosService->listarUsuarios();
-
-        return response()->json($usuarios);
+        $resultado = $this->usuariosService->remover($id);
+        return response()->json($resultado);
     }
 }

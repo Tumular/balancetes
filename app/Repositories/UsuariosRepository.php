@@ -7,20 +7,37 @@ use Exception;
 
 class UsuariosRepository
 {
-    public function listarUsuarios()
+    public function listar()
     {
         return Usuarios::all();
     }
 
-    public function criarUsuario($dados)
+    public function cadastrar($dados)
     {
         return Usuarios::create($dados);
     }
 
-    public function removerUsuario($usuarioId)
+    public function editar($id, array $dados)
     {
         try {
-            $usuario = Usuarios::find($usuarioId);
+            $usuario = Usuarios::findOrFail($id);
+
+            if (!$usuario) {
+                throw new Exception('Usuário não encontrada.');
+            }
+
+            $usuario->update($dados);
+            return $usuario;
+
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function remover($usuarioId)
+    {
+        try {
+            $usuario = Usuarios::findOrFail($usuarioId);
 
             if (!$usuario) {
                 throw new Exception('Usuário não encontrado.');

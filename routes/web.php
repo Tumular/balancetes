@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BancosController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\CategoriasController;
+
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
@@ -20,9 +22,20 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-//$router->get('/bancos', [BancosController::class, 'listarBancos']);
-$router->get('/bancos', 'BancosController@listarBancos');
-$router->get('/usuarios', 'UsuariosController@listarUsuarios');
-$router->post('/usuarios/cadastrar','UsuariosController@cadastrar');
-$router->delete('/usuarios/remover/{id}','UsuariosController@removerUsuario');
+// rotas Bancos
+$router->get('/bancos', 'BancosController@listar');
+$router->post('/bancos','BancosController@cadastrar');
+$router->put('/bancos/{id}','BancosController@editar');
+$router->delete('/bancos/{id}','BancosController@remover');
 
+// rotas Usuarios
+$router->get('/usuarios', 'UsuariosController@listar');
+$router->post('/usuarios','UsuariosController@cadastrar');
+$router->put('/usuarios/{id}','UsuariosController@editar');
+$router->delete('/usuarios/{id}','UsuariosController@remover');
+
+// rotas Categorias
+$router->get('/categorias', 'CategoriasController@listar');
+$router->post('/categorias', 'CategoriasController@cadastrar');
+$router->put('/categorias/{id}', 'CategoriasController@editar');
+$router->delete('/categorias/{id}', 'CategoriasController@remover');
