@@ -3,16 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\Categorias;
+use Illuminate\Database\Eloquent\Collection;
 use Exception;
 
 class CategoriasRepository
 {
-    public function listar()
+    public function listar(): Collection
     {
-        return Categorias::all();
+        return Categorias::orderBy('id', 'desc')->get();
     }
 
-    public function cadastrar(array $dados)
+    public function cadastrar(array $dados): Categorias
     {
         return Categorias::create($dados);
     }
@@ -20,14 +21,14 @@ class CategoriasRepository
     public function editar($id, array $dados)
     {
         try {
-            $categoria = Categorias::findOrFail($id);
+            $item = Categorias::findOrFail($id);
 
-            if (!$categoria) {
-                throw new Exception('Categoria não encontrada.');
+            if (!$item) {
+                throw new Exception('Registro não encontrada.');
             }
 
-            $categoria->update($dados);
-            return $categoria;
+            $item->update($dados);
+            return $item;
 
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -37,13 +38,13 @@ class CategoriasRepository
     public function remover($id)
     {
         try {
-            $categoria = Categorias::findOrFail($id);
+            $item = Categorias::findOrFail($id);
 
-            if (!$categoria) {
+            if (!$item) {
                 throw new Exception('Categoria não encontrada.');
             }
 
-            $categoria->delete();
+            $item->delete();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

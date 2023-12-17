@@ -2,29 +2,29 @@
 
 namespace App\Repositories;
 
-use App\Models\Usuarios;
+use App\Models\Vencimentos;
 use Illuminate\Database\Eloquent\Collection;
 use Exception;
 
-class UsuariosRepository
+class VencimentosRepository
 {
     public function listar(): Collection
     {
-        return Usuarios::orderBy('id', 'desc')->get();
+        return Vencimentos::orderBy('id', 'desc')->get();
     }
 
-    public function cadastrar(array $dados): Usuarios
+    public function cadastrar(array $dados): Vencimentos
     {
-        return Usuarios::create($dados);
+        return Vencimentos::create($dados);
     }
 
     public function editar($id, array $dados)
     {
         try {
-            $item = Usuarios::findOrFail($id);
+            $item = Vencimentos::findOrFail($id);
 
             if (!$item) {
-                throw new Exception('Registro não encontrada.');
+                throw new Exception('Registro não encontrado.');
             }
 
             $item->update($dados);
@@ -38,20 +38,15 @@ class UsuariosRepository
     public function remover($id)
     {
         try {
-            $item = Usuarios::findOrFail($id);
+            $item = Vencimentos::findOrFail($id);
 
             if (!$item) {
-                throw new Exception('Usuário não encontrado.');
+                throw new Exception('Vencimento não encontrado.');
             }
 
             $item->delete();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
-    }
-
-    public function usuarioExiste($usuario)
-    {
-        return Usuarios::where('usuario', $usuario)->exists();
     }
 }

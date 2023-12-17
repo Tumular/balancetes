@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UsuariosService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use App\Services\UsuariosService;
+use Illuminate\Http\JsonResponse;
+
 
 class UsuariosController extends Controller
 {
@@ -16,30 +18,55 @@ class UsuariosController extends Controller
         $this->usuariosService = $usuariosService;
     }
 
-    public function listar()
+    public function listar(): JsonResponse
     {
-        $usuarios = $this->usuariosService->listar();
-        return response()->json($usuarios);
+        $resultado = $this->usuariosService->listar();
+        return response()->json($resultado);
     }
 
     public function cadastrar(Request $request)
     {
-        $dados = $request->all();
-        $usuario = $this->usuariosService->cadastrar($dados);
+        try {
+            $validator = Validator::make($request->all(), [
+                'usuario' => 'required|string|max:255',
+                'senha' => 'required|string|max:255',
+                'nome' => 'nullable|string|max:255',
+                'email' => 'required|string|max:255',
+            ]);
 
-        return response()->json($usuario, 201);
+            if ($validator->fails()) {
+                return response()->json([
+                    'mensagem' => 'Erro de validação: ' . $validator->errors()->first(),
+                    'sucesso' => false,
+                ]);
+            }
+
+            $dados = $validator->validated();
+
+            $resultado = $this->usuariosService->cadastrar($dados);
+            return response()->json($resultado);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json(['mensagem' => 'Erro interno do servidor: ' . $e->getMessage(), 'sucesso' => false], 500);
+        }
+
     }
 
     public function editar(Request $request, $id)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'nome' => 'required|string|max:255',
+                'usuario' => 'required|string|max:255',
+                'senha' => 'required|string|max:255',
+                'nome' => 'nullable|string|max:255',
                 'email' => 'required|string|max:255',
             ]);
 
             if ($validator->fails()) {
-                throw new ValidationException($validator);
+                return response()->json([
+                    'mensagem' => 'Erro de validação: ' . $validator->errors()->first(),
+                    'sucesso' => false,
+                ]);
             }
 
             $dados = $validator->validated();

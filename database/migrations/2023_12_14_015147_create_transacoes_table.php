@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('tipo', ['saida', 'entrada']);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->onUpdateCurrent();
+            $table->softDeletes();
         });
     }
 

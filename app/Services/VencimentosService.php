@@ -2,24 +2,24 @@
 
 namespace App\Services;
 
-use App\Repositories\BancosRepository;
+use App\Repositories\VencimentosRepository;
 use Illuminate\Database\Eloquent\Collection;
 
 use Exception;
 
-class BancosService
+class VencimentosService
 {
-    private $bancosRepository;
+    protected $vencimentosRepository;
 
-    public function __construct(BancosRepository $bancosRepository)
+    public function __construct(VencimentosRepository $vencimentosRepository)
     {
-        $this->bancosRepository = $bancosRepository;
+        $this->vencimentosRepository = $vencimentosRepository;
     }
 
     public function listar(): Collection|array
     {
         try {
-            return $this->bancosRepository->listar();
+            return $this->vencimentosRepository->listar();
         } catch (\Exception $e) {
             return [
                 'mensagem' => 'Erro ao obter dados: ' . $e->getMessage(),
@@ -35,12 +35,12 @@ class BancosService
     public function cadastrar(array $dados): array
     {
         try {
-            $resultado = $this->bancosRepository->cadastrar($dados);
+            $resultado = $this->vencimentosRepository->cadastrar($dados);
 
             return [
-                'mensagem' => 'Registro efetuado com sucesso.',
+                'mensagem' => 'Registro Registro efetuado com sucesso.',
                 'sucesso' => true,
-                'categoria' => $resultado,
+                'vencimento' => $resultado,
             ];
         } catch (Exception $e) {
             return [
@@ -57,7 +57,7 @@ class BancosService
     public function editar($id, $dados)
     {
         try {
-            $this->bancosRepository->editar($id, $dados);
+            $this->vencimentosRepository->editar($id, $dados);
             return ['mensagem' => 'Registro editado com sucesso.', 'sucesso' => true];
         } catch (Exception $e) {
             return ['mensagem' => 'Erro ao editar Registro: ' . $e->getMessage(), 'sucesso' => false];
@@ -67,8 +67,8 @@ class BancosService
     public function remover($id)
     {
         try {
-            $this->bancosRepository->remover($id);
-            return ['mensagem' => 'Registro removida com sucesso.', 'sucesso' => true];
+            $this->vencimentosRepository->remover($id);
+            return ['mensagem' => 'Registro removido com sucesso.', 'sucesso' => true];
         } catch (Exception $e) {
             return ['mensagem' => 'Erro ao remover Registro: ' . $e->getMessage(), 'sucesso' => false];
         }

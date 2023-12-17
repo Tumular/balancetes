@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->string('descricao');
-            $table->string('observacao');
+            $table->string('observacao')->nullable();
             $table->decimal('valor', 10, 2);
             $table->date('data_vencimento');
             $table->enum('tipo', ['recebimento', 'pagamento']);
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->foreign('fatura_cartao_id')->references('id')->on('faturas_cartoes');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->onUpdateCurrent();
+            $table->softDeletes();
         });
     }
 

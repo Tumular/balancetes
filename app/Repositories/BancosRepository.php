@@ -3,16 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\Bancos;
+use Illuminate\Database\Eloquent\Collection;
 use Exception;
 
 class BancosRepository
 {
-    public function listar()
+    public function listar(): Collection
     {
-        return Bancos::all();
+        return Bancos::orderBy('id', 'desc')->get();
     }
 
-    public function cadastrar(array $dados)
+    public function cadastrar(array $dados): Bancos
     {
         return Bancos::create($dados);
     }
@@ -20,14 +21,14 @@ class BancosRepository
     public function editar($id, array $dados)
     {
         try {
-            $banco = Bancos::findOrFail($id);
+            $item = Bancos::findOrFail($id);
 
-            if (!$banco) {
-                throw new Exception('Banco não encontrada.');
+            if (!$item) {
+                throw new Exception('Registro não encontrada.');
             }
 
-            $banco->update($dados);
-            return $banco;
+            $item->update($dados);
+            return $item;
 
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -37,13 +38,13 @@ class BancosRepository
     public function remover($id)
     {
         try {
-            $banco = Bancos::findOrFail($id);
+            $item = Bancos::findOrFail($id);
 
-            if (!$banco) {
+            if (!$item) {
                 throw new Exception('Banco não encontrado.');
             }
 
-            $banco->delete();
+            $item->delete();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

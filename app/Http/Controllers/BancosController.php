@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BancosService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use App\Services\BancosService;
+use Illuminate\Http\JsonResponse;
+
 
 class BancosController extends Controller
 {
@@ -16,18 +18,37 @@ class BancosController extends Controller
         $this->bancosService = $bancosService;
     }
 
-    public function listar()
+    public function listar(): JsonResponse
     {
-        $bancos = $this->bancosService->listar();
-        return response()->json($bancos);
+        $resultado = $this->bancosService->listar();
+        return response()->json($resultado);
     }
 
     public function cadastrar(Request $request)
     {
-        $dados = $request->all();
-        $bancos = $this->bancosService->cadastrar($dados);
+        try {
+            $validator = Validator::make($request->all(), [
+                'usuario_id' => 'required|integer',
+                'nome' => 'required|string|max:255',
+                'saldo' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            ]);
 
-        return response()->json($bancos, 201);
+            if ($validator->fails()) {
+                return response()->json([
+                    'mensagem' => 'Erro de validação: ' . $validator->errors()->first(),
+                    'sucesso' => false,
+                ]);
+            }
+
+            $dados = $validator->validated();
+
+            $resultado = $this->bancosService->cadastrar($dados);
+            return response()->json($resultado);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json(['mensagem' => 'Erro interno do servidor: ' . $e->getMessage(), 'sucesso' => false], 500);
+        }
+
     }
 
     public function editar(Request $request, $id)
@@ -40,7 +61,10 @@ class BancosController extends Controller
             ]);
 
             if ($validator->fails()) {
-                throw new ValidationException($validator);
+                return response()->json([
+                    'mensagem' => 'Erro de validação: ' . $validator->errors()->first(),
+                    'sucesso' => false,
+                ]);
             }
 
             $dados = $validator->validated();

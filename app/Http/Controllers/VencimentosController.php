@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CategoriasService;
+use App\Services\VencimentosService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\JsonResponse;
+use Carbon\Carbon;
 
-
-class CategoriasController extends Controller
+class VencimentosController extends Controller
 {
-    private $categoriasService;
+    private $vencimentosService;
 
-    public function __construct(CategoriasService $categoriasService)
+    public function __construct(VencimentosService $vencimentosService)
     {
-        $this->categoriasService = $categoriasService;
+        $this->vencimentosService = $vencimentosService;
     }
 
     public function listar(): JsonResponse
     {
-        $resultado = $this->categoriasService->listar();
+        $resultado = $this->vencimentosService->listar();
         return response()->json($resultado);
     }
 
@@ -29,8 +29,13 @@ class CategoriasController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'usuario_id' => 'required|integer',
-                'nome' => 'required|string|max:255',
-                'cor' => 'required|string|max:7',
+                'descricao' => 'required|string|max:255',
+                'observacao' => 'nullable|string|max:255',
+                'valor' => 'required|numeric',
+                'data_vencimento' => 'required|date_format:d/m/Y',
+                'tipo' => 'required|in:recebimento,pagamento',
+                'categoria_id' => 'nullable|integer',
+                'fatura_cartao_id' => 'nullable|integer',
             ]);
 
             if ($validator->fails()) {
@@ -41,8 +46,9 @@ class CategoriasController extends Controller
             }
 
             $dados = $validator->validated();
+            $dados['data_vencimento'] = Carbon::createFromFormat('d/m/Y', $dados['data_vencimento'])->format('Y-m-d');
 
-            $resultado = $this->categoriasService->cadastrar($dados);
+            $resultado = $this->vencimentosService->cadastrar($dados);
             return response()->json($resultado);
         } catch (\Exception $e) {
             \Log::error($e);
@@ -55,8 +61,14 @@ class CategoriasController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'nome' => 'required|string|max:255',
-                'cor' => 'required|string|max:7',
+                'usuario_id' => 'required|integer',
+                'descricao' => 'required|string|max:255',
+                'observacao' => 'nullable|string|max:255',
+                'valor' => 'required|numeric',
+                'data_vencimento' => 'required|date_format:d/m/Y',
+                'tipo' => 'required|in:recebimento,pagamento',
+                'categoria_id' => 'nullable|integer',
+                'fatura_cartao_id' => 'nullable|integer',
             ]);
 
             if ($validator->fails()) {
@@ -67,8 +79,9 @@ class CategoriasController extends Controller
             }
 
             $dados = $validator->validated();
+            $dados['data_vencimento'] = Carbon::createFromFormat('d/m/Y', $dados['data_vencimento'])->format('Y-m-d');
 
-            $resultado = $this->categoriasService->editar($id, $dados);
+            $resultado = $this->vencimentosService->editar($id, $dados);
             return response()->json($resultado);
         } catch (\Exception $e) {
             \Log::error($e);
@@ -78,7 +91,7 @@ class CategoriasController extends Controller
 
     public function remover($id)
     {
-        $resultado = $this->categoriasService->remover($id);
+        $resultado = $this->vencimentosService->remover($id);
         return response()->json($resultado);
     }
 }

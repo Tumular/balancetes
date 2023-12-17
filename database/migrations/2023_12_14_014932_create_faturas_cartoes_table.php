@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('parcelas');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->onUpdateCurrent();
+            $table->softDeletes();
         });
     }
 

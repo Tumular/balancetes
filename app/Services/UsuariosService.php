@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\UsuariosRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 
@@ -15,12 +16,23 @@ class UsuariosService
         $this->usuariosRepository = $usuariosRepository;
     }
 
-    public function listar()
+    public function listar(): Collection|array
     {
-        return $this->usuariosRepository->listar();
+        try {
+            return $this->usuariosRepository->listar();
+        } catch (\Exception $e) {
+            return [
+                'mensagem' => 'Erro ao obter dados: ' . $e->getMessage(),
+                'detalhes' => [
+                    'tipo' => get_class($e),
+                    'linha' => $e->getLine(),
+                ],
+                'sucesso' => false,
+            ];
+        }
     }
 
-    public function cadastrar($dados)
+    public function cadastrar(array $dados): array
     {
         try {
             $usuarioExistente = $this->usuariosRepository->usuarioExiste($dados['usuario']);
@@ -30,11 +42,22 @@ class UsuariosService
             }
 
             $dados['senha'] = Hash::make($dados['senha']);
-            $this->usuariosRepository->cadastrar($dados);
+            $resultado = $this->usuariosRepository->cadastrar($dados);
 
-            return ['mensagem' => 'Usuário cadastrado com sucesso.', 'sucesso' => true];
+            return [
+                'mensagem' => 'Registro efetuado com sucesso.',
+                'sucesso' => true,
+                'vencimento' => $resultado,
+            ];
         } catch (\Throwable $th) {
-            return ['mensagem' => 'Erro ao cadastrar usuário: ' . $e->getMessage(), 'sucesso' => false];
+            return [
+                'mensagem' => 'Erro ao efetuar cadastro: ' . $e->getMessage(),
+                'detalhes' => [
+                    'tipo' => get_class($e),
+                    'linha' => $e->getLine(),
+                ],
+                'sucesso' => false,
+            ];
         }
 
     }
@@ -43,19 +66,19 @@ class UsuariosService
     {
         try {
             $this->usuariosRepository->editar($id, $dados);
-            return ['mensagem' => 'Usuário editado com sucesso.', 'sucesso' => true];
+            return ['mensagem' => 'Registro editado com sucesso.', 'sucesso' => true];
         } catch (Exception $e) {
-            return ['mensagem' => 'Erro ao editar Usuário: ' . $e->getMessage(), 'sucesso' => false];
+            return ['mensagem' => 'Erro ao editar Registro: ' . $e->getMessage(), 'sucesso' => false];
         }
     }
 
-    public function remover($usuarioId)
+    public function remover($id)
     {
         try {
-            $this->usuariosRepository->remover($usuarioId);
-            return ['mensagem' => 'Usuário removido com sucesso.', 'sucesso' => true];
+            $this->usuariosRepository->remover($id);
+            return ['mensagem' => 'Registro removido com sucesso.', 'sucesso' => true];
         } catch (Exception $e) {
-            return ['mensagem' => 'Erro ao remover usuário: ' . $e->getMessage(), 'sucesso' => false];
+            return ['mensagem' => 'Erro ao remover Registro: ' . $e->getMessage(), 'sucesso' => false];
         }
     }
 }

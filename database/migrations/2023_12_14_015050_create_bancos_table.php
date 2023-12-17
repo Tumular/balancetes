@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('bancos', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            $table->decimal('saldo', 10, 2);
             $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('usuarios');
+            $table->string('nome');
+            $table->decimal('saldo', 10, 2);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->onUpdateCurrent();
+            $table->softDeletes();
         });
     }
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\BancosController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\VencimentosController;
 
 
 /** @var \Laravel\Lumen\Routing\Router $router */
@@ -39,3 +40,9 @@ $router->get('/categorias', 'CategoriasController@listar');
 $router->post('/categorias', 'CategoriasController@cadastrar');
 $router->put('/categorias/{id}', 'CategoriasController@editar');
 $router->delete('/categorias/{id}', 'CategoriasController@remover');
+
+//rotas Vencimentos
+$router->get('/vencimentos', 'VencimentosController@listar');
+$router->post('/vencimentos', 'VencimentosController@cadastrar');
+$router->put('/vencimentos/{id}', 'VencimentosController@editar');
+$router->delete('/vencimentos/{id}', 'VencimentosController@remover');
