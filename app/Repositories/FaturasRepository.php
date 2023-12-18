@@ -2,29 +2,29 @@
 
 namespace App\Repositories;
 
-use App\Models\Usuarios;
+use App\Models\Faturas;
 use Illuminate\Database\Eloquent\Collection;
 use Exception;
 
-class UsuariosRepository
+class FaturasRepository
 {
     public function listar(): Collection
     {
-        return Usuarios::orderBy('id', 'desc')->get();
+        return Faturas::orderBy('id', 'desc')->get();
     }
 
-    public function cadastrar(array $dados): Usuarios
+    public function cadastrar(array $dados): Faturas
     {
-        return Usuarios::create($dados);
+        return Faturas::create($dados);
     }
 
     public function editar($id, array $dados)
     {
         try {
-            $item = Usuarios::findOrFail($id);
+            $item = Faturas::findOrFail($id);
 
             if (!$item) {
-                throw new Exception('Registro não encontrada.');
+                throw new Exception('Registro não encontrado.');
             }
 
             $item->update($dados);
@@ -38,7 +38,7 @@ class UsuariosRepository
     public function remover($id)
     {
         try {
-            $item = Usuarios::findOrFail($id);
+            $item = Faturas::findOrFail($id);
 
             if (!$item) {
                 throw new Exception('Registro não encontrado.');
@@ -48,10 +48,5 @@ class UsuariosRepository
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
-    }
-
-    public function usuarioExiste($usuario)
-    {
-        return Usuarios::where('usuario', $usuario)->exists();
     }
 }

@@ -41,7 +41,7 @@ class VencimentosRepository
             $item = Vencimentos::findOrFail($id);
 
             if (!$item) {
-                throw new Exception('Vencimento não encontrado.');
+                throw new Exception('Registro não encontrado.');
             }
 
             $item->delete();

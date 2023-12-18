@@ -41,7 +41,7 @@ class BancosRepository
             $item = Bancos::findOrFail($id);
 
             if (!$item) {
-                throw new Exception('Banco não encontrado.');
+                throw new Exception('Registro não encontrado.');
             }
 
             $item->delete();

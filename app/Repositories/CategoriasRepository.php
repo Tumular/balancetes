@@ -24,7 +24,7 @@ class CategoriasRepository
             $item = Categorias::findOrFail($id);
 
             if (!$item) {
-                throw new Exception('Registro não encontrada.');
+                throw new Exception('Registro não encontrado.');
             }
 
             $item->update($dados);
@@ -41,7 +41,7 @@ class CategoriasRepository
             $item = Categorias::findOrFail($id);
 
             if (!$item) {
-                throw new Exception('Categoria não encontrada.');
+                throw new Exception('Registro não encontrado.');
             }
 
             $item->delete();

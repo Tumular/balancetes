@@ -46,3 +46,14 @@ $router->get('/vencimentos', 'VencimentosController@listar');
 $router->post('/vencimentos', 'VencimentosController@cadastrar');
 $router->put('/vencimentos/{id}', 'VencimentosController@editar');
 $router->delete('/vencimentos/{id}', 'VencimentosController@remover');
+
+//rotas Faturas
+$router->get('/faturas', 'FaturasController@listar');
+$router->post('/faturas', 'FaturasController@cadastrar');
+$router->put('/faturas/{id}', 'FaturasController@editar');
+$router->delete('/faturas/{id}', 'FaturasController@remover');
+
+//rotas Transacoes
+$router->get('/transacoes', 'TransacoesController@listar');
+$router->post('/transacoes', 'TransacoesController@cadastrar');
+$router->delete('/transacoes/{id}', 'TransacoesController@remover');
